@@ -13,4 +13,4 @@ It started with this post on [Reddit](https://www.reddit.com/r/webdev/comments/4
 
 /u/bsmitty358 is working on a project for two Raspberry Pi computers to connect with his girlfriend at another college. [The current hardware design.](http://imgur.com/a/57adM)
 
-/u/protonfish is a developer that has been trying to learn more about the [Raspberry Pi](https://www.raspberrypi.org/), [node.js](https://nodejs.org/en/), and low-level network architecture. He is writing the client/server aspect of the project using [this article from Adafruit](https://learn.adafruit.com/node-embedded-development/why-node-dot-js) as a basis.
+/u/protonfish is a web developer that has been trying to learn more about the [Raspberry Pi](https://www.raspberrypi.org/), [node.js](https://nodejs.org/en/), and low-level network architecture. He is writing the client/server aspect of the project using [this article from Adafruit](https://learn.adafruit.com/node-embedded-development/why-node-dot-js) as a basis.
