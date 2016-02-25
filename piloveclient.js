@@ -15,7 +15,7 @@ var dgram = require('dgram'),
     port,
     lastReceived = 0,
     lastSent = 0,
-    simultaneousResolution = 3000,
+    simultaneousResolution = 3000, // Interval to determine if touches are simultaneous in milliseconds
     rl = readline.createInterface(process.stdin, process.stdout);
 
 function send(msg) {
