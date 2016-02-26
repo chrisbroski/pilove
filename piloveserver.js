@@ -16,7 +16,7 @@ function otherIP(name, ip) {
     return data[name].ip1;
 }
 
-function IPv6ToIPv4(IP) {
+function iPv6ToIPv4(IP) {
     if (IP.slice(0, 7) === '::ffff:') {
         return IP.slice(7);
     }
@@ -62,8 +62,10 @@ If The other IP is not there, send blank (202)
 If there are two IPs but the requesting IP is not one, erase all and 202
 */
 function createConnection(name, addr) {
+    // If the server is being hosted on the same box as a client
+    // This is only needed for the testing phase
     if (addr === '127.0.0.1') {
-        addr = IPv6ToIPv4(getLocalIPs()[0]);
+        addr = iPv6ToIPv4(getLocalIPs()[0]);
     }
     if (data[name]) {
         if (data[name].ip1 && data[name].ip2) {
@@ -89,7 +91,7 @@ app.get('/(:id)', function (req, res) {
     var namedData;
     if (req.params.id !== 'favicon.ico') {
         res.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
-        namedData = createConnection(req.params.id, IPv6ToIPv4(req.connection.remoteAddress));
+        namedData = createConnection(req.params.id, iPv6ToIPv4(req.connection.remoteAddress));
         res.statusCode = namedData[1];
         res.json(namedData[0]);
     } else {
@@ -99,5 +101,6 @@ app.get('/(:id)', function (req, res) {
 });
 
 app.listen(40000, function () {
+    // This should use port 80 when on a production server
     console.log('Server started: http://localhost:40000/');
 });

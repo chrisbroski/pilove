@@ -1,0 +1,23 @@
+{
+  "name": "piloveserver",
+  "version": "1.0.0",
+  "description": "HTTP server to coordinate pilove clients",
+  "main": "piloveserver.js",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisbroski/pilove.git"
+  },
+  "author": "Chris Broski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrisbroski/pilove/issues"
+  },
+  "homepage": "https://github.com/chrisbroski/pilove#readme"
+}

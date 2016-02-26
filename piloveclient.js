@@ -15,7 +15,7 @@ var dgram = require('dgram'),
     port,
     lastReceived = 0,
     lastSent = 0,
-    simultaneousResolution = 3000, // Interval to determine if touches are simultaneous in milliseconds
+    simultaneousResolution = 5000, // Interval to determine if touches are simultaneous in milliseconds
     rl = readline.createInterface(process.stdin, process.stdout);
 
 function send(msg) {
@@ -28,7 +28,9 @@ function send(msg) {
     */
     socket.send(msg, 0, msg.length, port, peerAddress, function (err) {
         if (err) {
-            throw err;
+            console.log(err);
+            getSocketFromServer(init);
+            return;
         }
 
         if (msg === 'touch') {
@@ -65,6 +67,9 @@ function receive(message) {
 function getSocketFromServer(callback) {
     // HTTP req
     // get ip and port from serverAddress
+    if (!serverAddress || !resourceName) {
+        throw 'Must include parameters for server and pair id.';
+    }
 
     var options = {hostname: serverAddress, port: 40000, path: '/' + resourceName},
         responseData = '',
