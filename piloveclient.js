@@ -16,7 +16,41 @@ var dgram = require('dgram'),
     lastReceived = 0,
     lastSent = 0,
     simultaneousResolution = 5000, // Interval to determine if touches are simultaneous in milliseconds
-    rl = readline.createInterface(process.stdin, process.stdout);
+    rl = readline.createInterface(process.stdin, process.stdout),
+    serverPort = 40001;
+
+/*
+From http://stackoverflow.com/questions/3653065/get-local-ip-address-in-node-js#8440736
+Answer by http://stackoverflow.com/users/1088990/nodyou
+*/
+function getLocalIPs() {
+    "use strict";
+
+    var os = require('os'),
+        ifaces = os.networkInterfaces(),
+        ips = [];
+
+    Object.keys(ifaces).forEach(function (ifname) {
+        var alias = 0;
+
+        ifaces[ifname].forEach(function (iface) {
+            if (iface.family !== 'IPv4' || iface.internal) {
+                // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+                return;
+            }
+
+            if (alias >= 1) {
+                // this single interface has multiple ipv4 addresses
+                ips.push(iface.address);
+            } else {
+                // this interface has only one ipv4 adress
+                ips.push(iface.address);
+            }
+            alias += 1;
+        });
+    });
+    return ips;
+}
 
 function send(msg) {
     var now = +(new Date());
@@ -71,12 +105,20 @@ function getSocketFromServer(callback) {
         throw 'Must include parameters for server and pair id.';
     }
 
-    var options = {hostname: serverAddress, port: 40000, path: '/' + resourceName},
+    var options = {
+            hostname: serverAddress,
+            port: serverPort,
+            path: '/' + resourceName,
+            headers: {
+                'x-forwarded-for': getLocalIPs().join(', ')
+            }
+        },
         responseData = '',
         status,
         pollingTime = 6000,
         req;
 
+    // pass local ip in X-Forwarded-For
     req = http.request(options, function (res) {
         console.log('STATUS: ', res.statusCode);
         status = res.statusCode;
