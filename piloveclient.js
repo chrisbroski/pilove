@@ -115,7 +115,7 @@ function getSocketFromServer(callback) {
         },
         responseData = '',
         status,
-        pollingTime = 6000,
+        pollingTime = 20000,
         req;
 
     // pass local ip in X-Forwarded-For

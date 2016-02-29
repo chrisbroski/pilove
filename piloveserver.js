@@ -71,15 +71,18 @@ function clientEquals(client1Addr, client1LocalIPs, client2Addr, client2LocalIPs
 }
 
 function saveSocket(name, addr, localIPs) {
+    console.log('saveSocket:', name, addr, localIPs);
     if (!data[name] || (!data[name].ip1 && !data[name].ip2)) {
         data[name] = {ip1: addr, ip2: '', localIp1: localIPs, localIp2: [], port: randomPort()};
+        console.log('New pair started id:' + name + ' ip:' + addr + ' local:', localIPs);
         return;
     }
-    console.log(clientEquals(addr, localIPs, data[name].ip1, data[name].localIp1));
+
     if (!data[name].ip2) {
         if (!clientEquals(addr, localIPs, data[name].ip1, data[name].localIp1)) {
             data[name].ip2 = addr;
             data[name].localIp2 = localIPs;
+            console.log('Paired ' + data[name].ip1 + ' to ' + data[name].ip2 + ' on port ' + data[name].port);
         }
         return;
     }
@@ -128,10 +131,11 @@ If there are two IPs but the requesting IP is not one, erase all and 202
                 socketInfo.ip = getLanIp('127.0.0.1', data[name].localIp1);
             }
         }
-
+        console.log('socket info:', socketInfo);
         return socketInfo;
     }
     socketInfo.status = 202;
+    console.log('socket info:', socketInfo);
     return socketInfo;
 }
 
@@ -143,7 +147,6 @@ function createConnection(name, addr, localIPs) {
 }
 
 function parseClientIPs(forwardedIPs) {
-    console.log(forwardedIPs);
     var arrayIP;
     if (!forwardedIPs) {
         return [];
@@ -158,10 +161,8 @@ function parseClientIPs(forwardedIPs) {
 app.get('/(:id)', function (req, res) {
     var namedData;
     if (req.params.id !== 'favicon.ico') {
-        console.log('GET received');
         res.setHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
         namedData = createConnection(req.params.id, iPv6ToIPv4(req.connection.remoteAddress), parseClientIPs(req.headers['x-forwarded-for']));
-        console.log(namedData);
         res.statusCode = namedData[1];
         res.json(namedData[0]);
     } else {
