@@ -6,7 +6,6 @@ Example: $ node piloveclient.js www.pilove.com pairname
 */
 
 var dgram = require('dgram'),
-    readline = require('readline'),
     http = require('http'),
     socket = dgram.createSocket('udp4'),
     serverAddress = process.argv[2],
@@ -16,7 +15,6 @@ var dgram = require('dgram'),
     lastReceived = 0,
     lastSent = 0,
     simultaneousResolution = 5000, // Interval to determine if touches are simultaneous in milliseconds
-    rl = readline.createInterface(process.stdin, process.stdout),
     serverPort = 40001,
     GPIO = require('onoff').Gpio,
     led = new GPIO(18, 'out'),
@@ -74,11 +72,10 @@ function send(msg) {
         if (msg && msg.slice(0, 1) === 't') {
             if (lastReceived && lastReceived + simultaneousResolution > now) {
                 console.log('simultaneous touch');
+                flash();
             }
             lastSent = now;
         }
-
-        rl.prompt();
     });
 }
 
@@ -89,6 +86,32 @@ function light(duration) {
     }, duration);
 }
 
+function flash() {
+    led.writeSync(0)
+    led.writeSync(1);
+    setTimeout(function () {
+        led.writeSync(0);
+    }, 100);
+    setTimeout(function () {
+        led.writeSync(1);
+    }, 200);
+    setTimeout(function () {
+        led.writeSync(0);
+    }, 300);
+    setTimeout(function () {
+        led.writeSync(1);
+    }, 400);
+    setTimeout(function () {
+        led.writeSync(0);
+    }, 500);
+    setTimeout(function () {
+        led.writeSync(1);
+    }, 600);
+    setTimeout(function () {
+        led.writeSync(0);
+    }, 700);
+}
+
 function receive(message) {
     var msg = message.toString('utf8'),
         now = +(new Date());
@@ -96,10 +119,11 @@ function receive(message) {
     if (msg && msg.slice(0, 1) === 't') {
         if (lastSent && lastSent + simultaneousResolution > now) {
             console.log('simultaneous touch');
+            flash();
         } else {
             console.log('touch received');
+            light(2000);
         }
-        light(2000);
         lastReceived = now;
 
     } else if (msg && msg.slice(0, 1) === 'c') {
@@ -107,7 +131,6 @@ function receive(message) {
     } else {
         console.log('ping received. id:', msg);
     }
-    rl.prompt();
 }
 
 function getSocketFromServer(callback) {
@@ -177,13 +200,6 @@ function init(socketInfo) {
             throw err;
         }
         console.log('Receiving UDP from ' + peerAddress + ' over port:' + port);
-
-        // Set up command line interface for messages
-        rl.setPrompt('PUNCH> ');
-        rl.prompt();
-        rl.on('line', function (line) {
-            send(line);
-        });
 
         // crude repeating ping to keep connection open
         setInterval(send, 30000);

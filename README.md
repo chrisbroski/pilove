@@ -23,6 +23,8 @@ The PiLove client requires the node module *onoff*.
 
 ## Server Admin
 
-The server should be started like so:
+The server should be started something like this so it will keep running after the terminal is closed:
 
     nohup node piloveserver.js > /dev/null &
+
+It's not working though. I'll need to get trying.
