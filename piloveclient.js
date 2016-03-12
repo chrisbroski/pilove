@@ -55,11 +55,12 @@ function getLocalIPs() {
 function send(msg) {
     var now = +(new Date());
     /* There should be 3 types of messages
-        * touch
-        * confirm
-        * ping
+        * touch (t)
+        * confirm (c+ping id)
+        * ping (integer ping id)
        Confirm and ping are yet to be implemented
     */
+    msg = msg || (Math.floor(Math.random() * 65536)).toString(10);
     socket.send(msg, 0, msg.length, port, peerAddress, function (err) {
         if (err) {
             console.log(err);
@@ -67,13 +68,13 @@ function send(msg) {
             return;
         }
 
-        if (msg === 'touch') {
+        if (msg && msg.slice(0, 1) === 't') {
             if (lastReceived && lastReceived + simultaneousResolution > now) {
                 console.log('simultaneous touch');
             }
             lastSent = now;
         }
-        //console.log('Sent message to ' + peerAddress + ":" + port + " at " + now);
+
         rl.prompt();
     });
 }
@@ -82,7 +83,7 @@ function receive(message) {
     var msg = message.toString('utf8'),
         now = +(new Date());
 
-    if (msg === 'touch') {
+    if (msg && msg.slice(0, 1) === 't') {
         if (lastSent && lastSent + simultaneousResolution > now) {
             console.log('simultaneous touch');
         } else {
@@ -90,10 +91,10 @@ function receive(message) {
         }
         lastReceived = now;
 
-    } else if (msg === 'confirm') {
+    } else if (msg && msg.slice(0, 1) === 'c') {
         console.log('touch confirmed');
     } else {
-        console.log('ping received');
+        console.log('ping received. id:', msg);
     }
     rl.prompt();
 }
@@ -167,6 +168,9 @@ function init(socketInfo) {
         rl.on('line', function (line) {
             send(line);
         });
+
+        // crude repeating ping to keep connection open
+        setInterval(send, 30000);
     });
 
     socket.on('message', function (message, remote) {
