@@ -110,6 +110,18 @@ function flash() {
     setTimeout(function () {
         led.writeSync(0);
     }, 700);
+    setTimeout(function () {
+        led.writeSync(1);
+    }, 800);
+    setTimeout(function () {
+        led.writeSync(0);
+    }, 900);
+    setTimeout(function () {
+        led.writeSync(1);
+    }, 1000);
+    setTimeout(function () {
+        led.writeSync(0);
+    }, 1100);
 }
 
 function receive(message) {
