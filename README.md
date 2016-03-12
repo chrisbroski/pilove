@@ -21,10 +21,6 @@ The PiLove server requires the node module *express*.
 
 The PiLove client requires the node module *onoff*.
 
-## Server Admin
+## Setup
 
-The server should be started something like this so it will keep running after the terminal is closed:
-
-    nohup node piloveserver.js > /dev/null &
-
-It's not working though. I'll need to get trying.
+I am using the Node module [forever](https://github.com/foreverjs/forever) on manage the server and client processes as described here http://www.slidequest.com/q/70ang
