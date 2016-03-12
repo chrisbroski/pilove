@@ -17,10 +17,7 @@ var dgram = require('dgram'),
     lastSent = 0,
     simultaneousResolution = 5000, // Interval to determine if touches are simultaneous in milliseconds
     rl = readline.createInterface(process.stdin, process.stdout),
-    serverPort = 40001,
-    GPIO = require('onoff').Gpio,
-    led = new GPIO(18, 'out'),
-    button = new GPIO(17, 'in', 'both');
+    serverPort = 40001;
 
 /*
 From http://stackoverflow.com/questions/3653065/get-local-ip-address-in-node-js#8440736
@@ -80,13 +77,6 @@ function send(msg) {
 
         rl.prompt();
     });
-}
-
-function light() {
-    led.writeSync(1);
-    setTimeout(function () {
-        led.writeSync(0);
-    }, 2000);
 }
 
 function receive(message) {
@@ -162,9 +152,6 @@ function init(socketInfo) {
 
     peerAddress = socketInfo.ip;
     port = socketInfo.port;
-    button.watch(function () {
-        send('touch');
-    });
 
     socket.bind(port, '0.0.0.0');
 
