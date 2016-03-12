@@ -163,8 +163,10 @@ function init(socketInfo) {
 
     peerAddress = socketInfo.ip;
     port = socketInfo.port;
-    button.watch(function () {
-        send('touch');
+    button.watch(function (err, status) {
+        if (status) {
+            send('touch');
+        }
     });
 
     socket.bind(port, '0.0.0.0');

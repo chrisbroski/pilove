@@ -18,3 +18,11 @@ It started with this post on [Reddit](https://www.reddit.com/r/webdev/comments/4
 ## Dependencies
 
 The PiLove server requires the node module *express*.
+
+The PiLove client requires the node module *onoff*.
+
+## Server Admin
+
+The server should be started like so:
+
+    nohup node piloveserver.js > /dev/null &
