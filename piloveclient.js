@@ -82,11 +82,11 @@ function send(msg) {
     });
 }
 
-function light() {
+function light(duration) {
     led.writeSync(1);
     setTimeout(function () {
         led.writeSync(0);
-    }, 2000);
+    }, duration);
 }
 
 function receive(message) {
@@ -99,6 +99,7 @@ function receive(message) {
         } else {
             console.log('touch received');
         }
+        light(2000);
         lastReceived = now;
 
     } else if (msg && msg.slice(0, 1) === 'c') {
